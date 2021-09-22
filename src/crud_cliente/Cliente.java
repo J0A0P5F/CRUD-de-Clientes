@@ -5,6 +5,8 @@
  */
 package crud_cliente;
 
+import java.util.Vector;
+
 /**
  *
  * @author pc
@@ -34,7 +36,7 @@ public class Cliente extends javax.swing.JFrame {
         btnPesquisar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jTabela = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -44,15 +46,47 @@ public class Cliente extends javax.swing.JFrame {
         txtNome = new javax.swing.JTextField();
         txtNasc = new javax.swing.JTextField();
         txtCpf = new javax.swing.JTextField();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        btnNovo.setText("Novo");
-        btnNovo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNovoActionPerformed(evt);
+        tabela = new Tabela(jTabela);
+        jTabela.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (evt.getClickCount() == 2) {
+                    Vector<String> linhas = tabela.getSelectedRow();
+                    txtCodigo.setText(linhas.get(0));
+                    txtNome.setText(linhas.get(1));
+                    txtNasc.setText(linhas.get(2));
+                    txtCpf.setText(linhas.get(3)); 
+                }
             }
         });
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        btnNovo.setText("Novo");
+
+        btnSalvar.addActionListener(event -> {
+            String nome = txtNome.getText();
+            String codigo = txtCodigo.getText();
+            String nasc = txtNasc.getText();
+            String cpf = txtCpf.getText();
+            if(codigo != null && nome != null && nasc != null && cpf != null) {
+                tabela.insertRow(new Object[] { codigo, nome, nasc, cpf});
+            }
+        });
+
+        btnPesquisar.addActionListener(event -> {
+            tabela.filterRows(txtNome.getText());
+        });
+
+        btnNovo.addActionListener(event -> {
+            txtNasc.setText("");
+            txtCodigo.setText("");
+            txtNome.setText("");
+            txtCpf.setText("");
+        });
+
+        btnExcluir.addActionListener(event -> {
+            tabela.deleteRow(txtCodigo.getText());
+        });
+
         jPanel1.add(btnNovo);
 
         btnSalvar.setText("Salvar");
@@ -64,16 +98,9 @@ public class Cliente extends javax.swing.JFrame {
         btnPesquisar.setText("Pesquisar");
         jPanel1.add(btnPesquisar);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Código", "Nome", "Nascimento", "CPF"
-            }
+        jTabela.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {},
+            new String [] {"Código", "Nome", "Nascimento", "CPF"}
         ) {
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
@@ -83,7 +110,7 @@ public class Cliente extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(jTabela);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -121,17 +148,6 @@ public class Cliente extends javax.swing.JFrame {
         jLabel4.setBounds(37, 113, 22, 15);
 
         txtCodigo.setToolTipText("");
-        txtCodigo.setEnabled(false);
-        txtCodigo.addContainerListener(new java.awt.event.ContainerAdapter() {
-            public void componentAdded(java.awt.event.ContainerEvent evt) {
-                txtCodigoComponentAdded(evt);
-            }
-        });
-        txtCodigo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCodigoActionPerformed(evt);
-            }
-        });
         jPanel2.add(txtCodigo);
         txtCodigo.setBounds(147, 0, 100, 19);
         jPanel2.add(txtNome);
@@ -168,19 +184,7 @@ public class Cliente extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNovoActionPerformed
-
-    private void txtCodigoComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_txtCodigoComponentAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCodigoComponentAdded
-
-    private void txtCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCodigoActionPerformed
+    }
 
     /**
      * @param args the command line arguments
@@ -231,10 +235,11 @@ public class Cliente extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTabela;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtCpf;
     private javax.swing.JTextField txtNasc;
     private javax.swing.JTextField txtNome;
+    private Tabela tabela;
     // End of variables declaration//GEN-END:variables
 }
